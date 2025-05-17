@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferremas | Contacto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'imagenes/ferremas.png' %}" alt="Ferremas" height="60" width="60"
+                    style="border-radius: 10px;">
+            </a>
+            <span class="navbar-text text-white ms-2">Ferremas</span>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Contáctanos</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="formContacto" class="bg-light p-4 rounded shadow-sm">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="correo" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">Mensaje</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 Ferremas - Todos los derechos reservados</p>
+            <p class="mb-0">Contacto: contacto@ferremas.cl | Tel: +56 9 1234 5678</p>
+            <a href="/productos/" class="text-decoration-underline text-white mt-2 d-block">
+                ¡Descubre nuestras herramientas y soluciones para tu proyecto!
+            </a>
+        </div>
+    </footer>
+
+    <!-- Script de envío -->
+    <script>
+        document.getElementById('formContacto').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const datos = Object.fromEntries(new FormData(e.target).entries());
+            try {
+                const res = await fetch('http://127.0.0.1:8000/api/contactos/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                if (res.ok) {
+                    alert('Mensaje enviado con éxito');
+                    e.target.reset();
+                } else {
+                    alert('Error al enviar mensaje');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('No se pudo conectar con el servidor.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
