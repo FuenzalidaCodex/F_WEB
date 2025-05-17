@@ -12,3 +12,6 @@ def inicio_sesion(request):
 
 def registrarse(request):
     return render(request, 'usuario/registrarse.html')
+
+def carrito(request):
+    return render(request, 'carrito.html')
