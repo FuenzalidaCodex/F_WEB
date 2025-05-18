@@ -1,0 +1,19 @@
+<h1>Procesando pago...</h1>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token_ws");
+
+  fetch("http://127.0.0.1:8000/api/webpay/commit/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token_ws: token })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      document.body.innerHTML += `<p>Pago: ${data.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+    })
+    .catch(error => {
+      document.body.innerHTML += `<p>Error: ${error.message}</p>`;
+    });
+</script>

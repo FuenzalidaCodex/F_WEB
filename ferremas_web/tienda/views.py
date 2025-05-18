@@ -15,3 +15,5 @@ def registrarse(request):
 
 def carrito(request):
     return render(request, 'carrito.html')
+
+

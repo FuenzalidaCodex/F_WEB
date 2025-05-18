@@ -21,7 +21,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="{% static 'imagenes/ferremas.png' %}" alt="Ferremas" height="70px" width="70px" style="border-radius: 10px;">
+                <img src="{% static 'imagenes/ferremas.png' %}" alt="Ferremas" height="70px" width="70px"
+                    style="border-radius: 10px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -37,23 +38,31 @@
                         </a>
                         <ul class="dropdown-menu" style="background-color: #F57C00;" aria-labelledby="usuarioDropdown">
                             <li id="loginLinks">
-                                <a class="dropdown-item text-white" href="/usuario/inicio_sesion/" style="background-color: #F57C00;">Inicio de Sesión</a>
-                                <a class="dropdown-item text-white" href="/usuario/registrarse/" style="background-color: #F57C00;">Crear Cuenta</a>
+                                <a class="dropdown-item text-white" href="/usuario/inicio_sesion/"
+                                    style="background-color: #F57C00;">Inicio de Sesión</a>
+                                <a class="dropdown-item text-white" href="/usuario/registrarse/"
+                                    style="background-color: #F57C00;">Crear Cuenta</a>
                             </li>
                             <li id="logoutLink" style="display: none;">
-                                <button class="dropdown-item text-white" onclick="cerrarSesion()" style="background-color: #F57C00;">Cerrar Sesión</button>
+                                <button class="dropdown-item text-white" onclick="cerrarSesion()"
+                                    style="background-color: #F57C00;">Cerrar Sesión</button>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown" id="empleadoMenu" style="display: none;">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarEmpleado" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarEmpleado" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             Empleados
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarEmpleado">
                             <li><a class="dropdown-item">Vista Bodeguero</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item">Vista Vendedor</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item">Vista Contador</a></li>
                         </ul>
                     </li>
@@ -143,24 +152,50 @@
                             return;
                         }
 
-                        const agregarRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                carrito: carritoID,
-                                producto: p.id_producto,
-                                cantidad: cantidad
-                            })
-                        });
+                        // Buscar si el producto ya está en el carrito
+                        const itemsCarritoRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/?carrito=${carritoID}`);
+                        const itemsCarrito = await itemsCarritoRes.json();
 
-                        if (agregarRes.ok) {
-                            mensaje.textContent = 'Producto agregado al carrito.';
-                            mensaje.classList.remove('text-danger');
-                            mensaje.classList.add('text-success');
+                        const itemExistente = itemsCarrito.find(i => i.producto === p.id_producto);
+
+                        if (itemExistente) {
+                            // Si ya existe, actualizamos la cantidad
+                            const nuevaCantidad = itemExistente.cantidad + cantidad;
+                            const actualizarRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/${itemExistente.id}/`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ cantidad: nuevaCantidad })
+                            });
+
+                            if (actualizarRes.ok) {
+                                mensaje.textContent = 'Cantidad actualizada en el carrito.';
+                                mensaje.classList.remove('text-danger');
+                                mensaje.classList.add('text-success');
+                            } else {
+                                mensaje.textContent = 'Error al actualizar la cantidad.';
+                                mensaje.classList.add('text-danger');
+                            }
                         } else {
-                            const errorData = await agregarRes.json();
-                            mensaje.textContent = errorData.error || 'Error al agregar al carrito.';
-                            mensaje.classList.add('text-danger');
+                            // Si no existe, lo agregamos
+                            const agregarRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    carrito: carritoID,
+                                    producto: p.id_producto,
+                                    cantidad: cantidad
+                                })
+                            });
+
+                            if (agregarRes.ok) {
+                                mensaje.textContent = 'Producto agregado al carrito.';
+                                mensaje.classList.remove('text-danger');
+                                mensaje.classList.add('text-success');
+                            } else {
+                                const errorData = await agregarRes.json();
+                                mensaje.textContent = errorData.error || 'Error al agregar al carrito.';
+                                mensaje.classList.add('text-danger');
+                            }
                         }
 
                     } catch (err) {
