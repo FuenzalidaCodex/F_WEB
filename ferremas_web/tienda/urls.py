@@ -11,5 +11,10 @@ urlpatterns = [
     path('usuario/registrarse/', views.registrarse, name='usuario/registrarse'),
     path('detalle/', TemplateView.as_view(template_name='detalle.html'), name='detalle_producto'),
     path('carrito/', views.carrito, name='carrito'),
+    path('empleados/bodeguero/', views.bodeguero_view, name='bodeguero'),
+    path('empleados/vendedor/', views.vendedor_view, name='vendedor'),
+    path('empleados/contador/', views.contador_view, name='contador'),
+    path('compras/', views.compras, name='compras'),
+
     
 ]

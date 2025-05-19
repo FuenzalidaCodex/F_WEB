@@ -17,3 +17,17 @@ def carrito(request):
     return render(request, 'carrito.html')
 
 
+def bodeguero_view(request):
+    return render(request, 'empleados/bodeguero.html')
+
+
+def vendedor_view(request):
+    return render(request, 'empleados/vendedor.html')
+
+def contador_view(request):
+    return render(request, 'empleados/contador.html')
+
+def compras(request):
+    return render(request, 'compras.html')
+
+
