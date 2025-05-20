@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import productos
+from .views import productos, pago_exitoso, pago_cancelado
 from . import views
 from django.views.generic import TemplateView
+
 
 urlpatterns = [
     path('', productos),
@@ -14,7 +15,10 @@ urlpatterns = [
     path('empleados/bodeguero/', views.bodeguero_view, name='bodeguero'),
     path('empleados/vendedor/', views.vendedor_view, name='vendedor'),
     path('empleados/contador/', views.contador_view, name='contador'),
+    path('empleados/admin/', views.admin_view, name='admin'),
     path('compras/', views.compras, name='compras'),
+    path('exito/', pago_exitoso, name='pago_exito'),
+    path('cancelado/', pago_cancelado, name='pago_cancelado'),
 
     
 ]

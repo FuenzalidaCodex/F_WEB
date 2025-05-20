@@ -67,7 +67,7 @@
             e.preventDefault();
             const datos = Object.fromEntries(new FormData(e.target).entries());
             try {
-                const res = await fetch('http://127.0.0.1:8000/api/contactos/', {
+                const res = await fetch('http://localhost:8000/api/contactos/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)

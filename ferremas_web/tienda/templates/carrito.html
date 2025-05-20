@@ -1,34 +1,80 @@
-
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
 
-<!-- Incluye el SDK de Mercado Pago -->
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-
-<!-- Contenedor para el botón -->
-<div id="wallet_container"></div>
-
-
-<script src="{% static 'js/carrito.js' %}"></script>
-<script>
-  // Public Key SANDBOX
-  const mp = new MercadoPago('TEST-934611eb-fcb9-4bd2-91f2-5de74c321b6d', {
-    locale: "es-CL"
-  });
-
-  // Llama a tu API para obtener la preferencia
-  fetch("http://localhost:8000/api/crear_preferencia", {
-    method: "POST"
-  })
-    .then(res => res.json())
-    .then(data => {
-      mp.checkout({
-        preference: {
-          id: data.preference_id
-        },
-        render: {
-          container: "#wallet_container",
-          label: "Pagar con Mercado Pago"
+<head>
+    <meta charset="UTF-8">
+    <title>Ferremas | Carrito de Compras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .dropdown-item:hover {
+            color: #FFD54F !important;
+            background-color: #5d403715 !important;
+            transition: color 0.3s ease, background-color 0.3s ease;
         }
-      });
-    });
-</script>
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'imagenes/ferremas.png' %}" alt="Ferremas" height="70" width="70"
+                    style="border-radius: 10px;">
+            </a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/productos/">← Volver a productos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Carrito de Compras</h1>
+        <div id="carritoContenedor" class="table-responsive"></div>
+        <div id="carritoMensaje" class="text-center mt-3"></div>
+
+        <div class="text-center mt-3">
+            <label for="currency-selector" class="form-label">Convertir total a:</label>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <select id="currency-selector" class="form-select w-auto">
+                    <!-- Lista de monedas -->
+                    <option value="CLP" selected>Peso chileno (CLP)</option>
+                    <option value="USD">Dólar estadounidense (USD)</option>
+                    <option value="ARS">Peso argentino (ARS)</option>
+                    <option value="BRL">Real brasileño (BRL)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                    <!-- Puedes agregar más monedas aquí -->
+                </select>
+                <button class="btn btn-outline-primary" onclick="convertirCarritoMoneda()">Convertir</button>
+            </div>
+            <p id="carrito-total-convertido" class="mt-3 fw-bold text-primary"></p>
+        </div>
+
+        <div class="text-center mt-3">
+            <button class="btn btn-outline-danger" onclick="vaciarCarrito()">🗑️ Vaciar Carrito</button>
+        </div>
+        <hr>
+        <div class="text-center mt-4">
+            <button id="boton-compra" class="btn btn-success">💳 Comprar con Stripe</button>
+        </div>
+
+    </div>
+    <script src="{% static 'js/carrito.js' %}"></script>
+</body>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">© 2025 Ferremas - Todos los derechos reservados</p>
+        <p class="mb-0">Contacto: contacto@ferremas.cl | Tel: +56 9 1234 5678</p>
+    </div>
+</footer>
+
+</html>

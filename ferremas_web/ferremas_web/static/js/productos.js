@@ -5,7 +5,7 @@ async function cargarProductos(filtro = '') {
     try {
         // Si no hay cache o está vacío, hacemos fetch
         if (productosCache.length === 0) {
-            const respuesta = await fetch('http://127.0.0.1:8000/api/productos/');
+            const respuesta = await fetch('http://localhost:8000/api/productos/');
             productosCache = await respuesta.json();
         }
 

@@ -27,7 +27,16 @@ def vendedor_view(request):
 def contador_view(request):
     return render(request, 'empleados/contador.html')
 
+def admin_view(request):
+    return render(request, 'empleados/admin.html')
+
 def compras(request):
     return render(request, 'compras.html')
 
 
+
+def pago_exitoso(request):
+    return render(request, 'pago/exito.html')
+
+def pago_cancelado(request):
+    return render(request, 'pago/cancelado.html')

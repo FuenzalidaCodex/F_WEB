@@ -84,7 +84,7 @@
             if (!id) return;
 
             try {
-                const res = await fetch(`http://127.0.0.1:8000/api/productos/${id}/`);
+                const res = await fetch(`http://localhost:8000/api/productos/${id}/`);
                 if (!res.ok) throw new Error("Producto no encontrado");
                 const p = await res.json();
                 const div = document.getElementById('detalleProducto');
@@ -131,13 +131,13 @@
                     try {
                         // Obtener o crear carrito
                         let carritoID;
-                        const buscarCarrito = await fetch(`http://127.0.0.1:8000/api/carrito/?cliente=${usuario.id}`);
+                        const buscarCarrito = await fetch(`http://localhost:8000/api/carrito/?cliente=${usuario.id}`);
                         const buscarData = await buscarCarrito.json();
 
                         if (buscarData.length > 0) {
                             carritoID = buscarData[0].id;
                         } else {
-                            const crearCarrito = await fetch(`http://127.0.0.1:8000/api/crear-carrito/`, {
+                            const crearCarrito = await fetch(`http://localhost:8000/api/crear-carrito/`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ cliente: usuario.id })
@@ -153,7 +153,7 @@
                         }
 
                         // Buscar si el producto ya está en el carrito
-                        const itemsCarritoRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/?carrito=${carritoID}`);
+                        const itemsCarritoRes = await fetch(`http://localhost:8000/api/items-carrito/?carrito=${carritoID}`);
                         const itemsCarrito = await itemsCarritoRes.json();
 
                         const itemExistente = itemsCarrito.find(i => i.producto === p.id_producto);
@@ -161,7 +161,7 @@
                         if (itemExistente) {
                             // Si ya existe, actualizamos la cantidad
                             const nuevaCantidad = itemExistente.cantidad + cantidad;
-                            const actualizarRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/${itemExistente.id}/`, {
+                            const actualizarRes = await fetch(`http://localhost:8000/api/items-carrito/${itemExistente.id}/`, {
                                 method: 'PATCH',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ cantidad: nuevaCantidad })
@@ -177,7 +177,7 @@
                             }
                         } else {
                             // Si no existe, lo agregamos
-                            const agregarRes = await fetch(`http://127.0.0.1:8000/api/items-carrito/`, {
+                            const agregarRes = await fetch(`http://localhost:8000/api/items-carrito/`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({

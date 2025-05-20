@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Compra Cancelada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --color-fondo: #f8d7da;
+            --color-texto: #721c24;
+            --color-secundario: #f5c6cb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: var(--color-secundario);
+            color: var(--color-texto);
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #e2aeb1;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">❌</div>
+        <h1>Compra Cancelada</h1>
+        <p>Tu transacción ha sido cancelada. No se ha realizado ningún cobro.</p>
+        <a href="/carrito/">Volver al carrito</a>
+    </div>
+</body>
+</html>
