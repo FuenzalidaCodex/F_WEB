@@ -1,8 +1,11 @@
+import { API_URL } from "./config.js";
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const tablaBody = document.querySelector('#tabla-usuarios tbody');
 
     // URL correcta para la API de usuarios
-    const urlAPI = 'http://localhost:8000/api/usuarios/';
+    const urlAPI = `${API_URL}/api/usuarios/`;
 
     fetch(urlAPI)
         .then(response => {
@@ -37,3 +40,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(error);
         });
 });
+
+

@@ -69,45 +69,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const email = e.target.email.value.trim();
-            const password = e.target.password.value.trim();
-            const mensajeDiv = document.getElementById('mensaje');
-            mensajeDiv.textContent = '';
-
-            if (!email || !password) {
-                mensajeDiv.textContent = 'Por favor, completa ambos campos.';
-                mensajeDiv.style.color = 'red';
-                return;
-            }
-
-            try {
-                const response = await fetch('http://127.0.0.1:8000/api/login/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ login: email, password: password })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    mensajeDiv.style.color = 'green';
-                    mensajeDiv.textContent = '¡Inicio de sesión exitoso! Redirigiendo...';
-                    localStorage.setItem('usuario', JSON.stringify(data));
-                    setTimeout(() => { window.location.href = '/productos/'; }, 1500);
-                } else {
-                    mensajeDiv.style.color = 'red';
-                    mensajeDiv.textContent = 'Usuario o contraseña incorrectos.';
-                }
-            } catch (error) {
-                mensajeDiv.style.color = 'red';
-                mensajeDiv.textContent = 'Error al conectar con el servidor.';
-                console.error('Error al iniciar sesión:', error);
-            }
-        });
-    </script>
+    <script type="module" src="{% static 'js/registro.js' %}"></script>
 </body>
 
 <footer class="bg-dark text-white text-center py-3 mt-5">

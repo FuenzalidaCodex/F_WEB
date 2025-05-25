@@ -1,3 +1,5 @@
+import { API_URL } from "./config.js";
+
 // carrito.js
 let carritoIdGlobal = null;
 
@@ -7,7 +9,7 @@ if (!usuario) {
   alert('No hay usuario logueado. Por favor inicia sesión para ver el carrito.');
 }
 const clienteId = usuario ? usuario.id : 0;
-const apiCarritoURL = `http://localhost:8000/api/carrito/?cliente=${clienteId}`;
+const apiCarritoURL = `${API_URL}/api/carrito/?cliente=${clienteId}`;
 
 // Formato para moneda CLP (Chile)
 const formatoCLP = new Intl.NumberFormat('es-CL', {
@@ -57,7 +59,7 @@ async function mostrarProductosCarrito(items) {
   }
 
   const productosDetallados = await Promise.all(items.map(async (item) => {
-    const resp = await fetch(`http://localhost:8000/api/productos/${item.producto}/`);
+    const resp = await fetch(`${API_URL}/api/productos/${item.producto}/`);
     const producto = await resp.json();
     return {
       ...item,
@@ -127,7 +129,7 @@ async function eliminarProducto(productoId) {
 
   try {
     // Llamada DELETE para eliminar item del carrito
-    const response = await fetch(`http://localhost:8000/api/eliminar-item/`, {
+    const response = await fetch(`${API_URL}/api/eliminar-item/`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -154,7 +156,7 @@ async function vaciarCarrito() {
   if (!carritoIdGlobal) return;
 
   try {
-    const response = await fetch(`http://localhost:8000/api/vaciar-carrito/${carritoIdGlobal}/`, {
+    const response = await fetch(`${API_URL}/api/vaciar-carrito/${carritoIdGlobal}/`, {
       method: 'DELETE'
     });
 
@@ -186,7 +188,7 @@ async function actualizarCantidad(productoId, delta, cantidadActual, stock) {
   }
 
   try {
-    const response = await fetch('http://localhost:8000/api/agregar-item/', {
+    const response = await fetch(`${API_URL}/api/agregar-item/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -211,11 +213,6 @@ async function actualizarCantidad(productoId, delta, cantidadActual, stock) {
 
 
 
-// Función para convertir moneda (por implementar)
-function convertirCarritoMoneda() {
-  alert("Función para conversión de moneda no implementada aún.");
-}
-
 // Cargar carrito al iniciar
 document.addEventListener('DOMContentLoaded', () => {
   obtenerCarrito();
@@ -237,7 +234,7 @@ async function convertirCarritoMoneda() {
     const totalCLP = parseFloat(totalFila.replace(/[^\d]/g, '')); // quitar símbolo y puntos
 
     // Llamada a la API para obtener la tasa de conversión
-    const response = await fetch(`http://localhost:8000/api/conversion/?moneda=${monedaSeleccionada}`);
+    const response = await fetch(`${API_URL}/api/conversion/?moneda=${monedaSeleccionada}`);
     const data = await response.json();
 
     if (!response.ok || !data.tasa_conversion) {
@@ -269,7 +266,7 @@ document.getElementById('boton-compra').addEventListener('click', async () => {
 
   console.log("Enviando al backend:", carritoItems); // 👈 VERIFICA qué estás enviando
 
-  const response = await fetch('http://localhost:8000/api/pago/stripe/', {
+  const response = await fetch(`${API_URL}/api/pago/stripe/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -304,7 +301,7 @@ async function usuarioItems(carrito) {
   }
 
   const listaDetallada = await Promise.all(carrito.items.map(async (item) => {
-    const resp = await fetch(`http://localhost:8000/api/productos/${item.producto}/`);
+    const resp = await fetch(`${API_URL}/api/productos/${item.producto}/`);
     const producto = await resp.json();
 
     return {
@@ -326,3 +323,7 @@ async function usuarioItems(carrito) {
   localStorage.setItem('usuarioItems', JSON.stringify(listaDetallada));
 }
 
+window.convertirCarritoMoneda = convertirCarritoMoneda;
+window.vaciarCarrito = vaciarCarrito;
+window.eliminarProducto = eliminarProducto;
+window.actualizarCantidad = actualizarCantidad;

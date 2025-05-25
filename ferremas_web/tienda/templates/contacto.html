@@ -62,28 +62,7 @@
     </footer>
 
     <!-- Script de envío -->
-    <script>
-        document.getElementById('formContacto').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const datos = Object.fromEntries(new FormData(e.target).entries());
-            try {
-                const res = await fetch('http://localhost:8000/api/contactos/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                if (res.ok) {
-                    alert('Mensaje enviado con éxito');
-                    e.target.reset();
-                } else {
-                    alert('Error al enviar mensaje');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('No se pudo conectar con el servidor.');
-            }
-        });
-    </script>
+<script type="module" src="{% static 'js/registro.js' %}"></script>
 
 </body>
 

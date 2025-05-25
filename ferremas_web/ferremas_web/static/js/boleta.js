@@ -1,3 +1,5 @@
+import { API_URL } from "./config.js";
+
 // Datos simulados para productos
 const productosCache = [
     { id_producto: 1, nombre: "Martillo", precio: 15000, imagen: '', descripcion: 'Martillo de acero', stock: 10, fecha_creacion: '2025-05-10' },

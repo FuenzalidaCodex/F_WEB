@@ -6,6 +6,14 @@ inicias con:
 
 cd ferremas_web
 
+y:
+
+python -m venv env
+
+luego:
+
+env\Scripts\activate
+
 y luego con:
 
 pip install -r requirements.txt
@@ -18,4 +26,4 @@ python manage.py migrate
 
 con el siguiente comando inicias el server:
 
-python manage.py runserver 8001
+python manage.py runserver 0.0.0.0:8001

@@ -1,9 +1,11 @@
+import { API_URL } from "./config.js";
+
 let productosCache = [];
 
 async function cargarProductos(filtro = '') {
     try {
         if (productosCache.length === 0) {
-            const respuesta = await fetch('http://localhost:8000/api/productos/');
+            const respuesta = await fetch(`${API_URL}/api/productos/`);
             productosCache = await respuesta.json();
         }
 

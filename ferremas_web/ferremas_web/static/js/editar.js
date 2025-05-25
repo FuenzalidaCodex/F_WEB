@@ -1,5 +1,7 @@
+import { API_URL } from "./config.js";
+
 let productosCache = [];
-const apiUrl = 'http://localhost:8000/api/productos/';
+const apiUrl = `${API_URL}/api/productos/`;
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();

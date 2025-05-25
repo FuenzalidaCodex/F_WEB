@@ -1,0 +1,160 @@
+import { API_URL } from "./config.js";
+async function cargarDetalle() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    if (!id) return;
+
+    try {
+        const res = await fetch(`${API_URL}/api/productos/${id}/`);
+        if (!res.ok) throw new Error("Producto no encontrado");
+        const p = await res.json();
+        const div = document.getElementById('detalleProducto');
+
+        div.innerHTML = `
+                    <div class="card mb-5" style="max-width: 800px;">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <img src="${p.imagen || 'https://via.placeholder.com/300'}" class="img-fluid rounded-start" alt="${p.nombre}">
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <h3 class="card-title">${p.nombre}</h3>
+                                    <p class="card-text">${p.descripcion || 'Sin descripción.'}</p>
+                                    <p class="card-text"><strong>Fabricante:</strong> ${p.fabricante}</p>
+                                    <p class="card-text"><strong>Precio:</strong> $${p.precio}</p>
+                                    <p class="card-text"><strong>Stock:</strong> ${p.stock}</p>
+                                    <form id="formCarrito" class="mt-3">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="cantidad" name="cantidad" value="1" min="1" required>
+                                            <button type="submit" class="btn btn-success">Agregar al carrito</button>
+                                        </div>
+                                    </form>
+                                    <div id="carritoMensaje" class="mt-2 text-center"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/productos/" class="btn btn-outline-secondary mt-3">← Volver a productos</a>
+                    </div>
+                `;
+
+        document.getElementById('formCarrito').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            const mensaje = document.getElementById('carritoMensaje');
+
+            if (!usuario) {
+                mensaje.textContent = 'Debes iniciar sesión para agregar al carrito.';
+                mensaje.classList.add('text-danger');
+                return;
+            }
+
+            try {
+                // Obtener o crear carrito
+                let carritoID;
+                const buscarCarrito = await fetch(`${API_URL}/api/carrito/?cliente=${usuario.id}`);
+                const buscarData = await buscarCarrito.json();
+
+                if (buscarData.length > 0) {
+                    carritoID = buscarData[0].id;
+                } else {
+                    const crearCarrito = await fetch(`${API_URL}/api/crear-carrito/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cliente: usuario.id })
+                    });
+                    const crearData = await crearCarrito.json();
+                    carritoID = crearData.id;
+                }
+
+                if (!p.id_producto) {
+                    mensaje.textContent = 'ID del producto no disponible.';
+                    mensaje.classList.add('text-danger');
+                    return;
+                }
+
+                // Buscar si el producto ya está en el carrito
+                const itemsCarritoRes = await fetch(`${API_URL}/api/items-carrito/?carrito=${carritoID}`);
+                const itemsCarrito = await itemsCarritoRes.json();
+
+                const itemExistente = itemsCarrito.find(i => i.producto === p.id_producto);
+
+                if (itemExistente) {
+                    // Si ya existe, actualizamos la cantidad
+                    const nuevaCantidad = itemExistente.cantidad + cantidad;
+                    const actualizarRes = await fetch(`${API_URL}/api/items-carrito/${itemExistente.id}/`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cantidad: nuevaCantidad })
+                    });
+
+                    if (actualizarRes.ok) {
+                        mensaje.textContent = 'Cantidad actualizada en el carrito.';
+                        mensaje.classList.remove('text-danger');
+                        mensaje.classList.add('text-success');
+                    } else {
+                        mensaje.textContent = 'Error al actualizar la cantidad.';
+                        mensaje.classList.add('text-danger');
+                    }
+                } else {
+                    // Si no existe, lo agregamos
+                    const agregarRes = await fetch(`${API_URL}/api/items-carrito/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            carrito: carritoID,
+                            producto: p.id_producto,
+                            cantidad: cantidad
+                        })
+                    });
+
+                    if (agregarRes.ok) {
+                        mensaje.textContent = 'Producto agregado al carrito.';
+                        mensaje.classList.remove('text-danger');
+                        mensaje.classList.add('text-success');
+                    } else {
+                        const errorData = await agregarRes.json();
+                        mensaje.textContent = errorData.error || 'Error al agregar al carrito.';
+                        mensaje.classList.add('text-danger');
+                    }
+                }
+
+            } catch (err) {
+                mensaje.textContent = 'Error de conexión con la API.';
+                mensaje.classList.add('text-danger');
+            }
+
+            setTimeout(() => mensaje.textContent = '', 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al cargar detalle:', error);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarDetalle();
+
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const nombreUsuario = document.getElementById('nombreUsuario');
+    const loginLinks = document.getElementById('loginLinks');
+    const logoutLink = document.getElementById('logoutLink');
+    const empleadoMenu = document.getElementById('empleadoMenu');
+
+    if (usuario) {
+        nombreUsuario.textContent = usuario.username;
+        loginLinks.style.display = 'none';
+        logoutLink.style.display = 'block';
+        if (usuario.tipo_usuario !== 'cliente') {
+            empleadoMenu.style.display = 'block';
+        }
+    }
+
+function cerrarSesion() {
+    localStorage.removeItem('usuario');
+    window.location.href = '/productos/';
+}
+
+
+});
