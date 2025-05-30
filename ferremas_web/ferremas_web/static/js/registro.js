@@ -1,5 +1,6 @@
 import { API_URL } from "./config.js";
 import { API_URL1 } from "./config.js";
+import { enviarCorreo } from './correo.js';
 
 // Registro
 const registerForm = document.getElementById('registerForm');
@@ -37,6 +38,9 @@ if (registerForm) {
             if (response.ok) {
                 mensajeDiv.style.color = 'green';
                 mensajeDiv.textContent = '¡Registro exitoso! Redirigiendo al inicio de sesión...';
+
+                await enviarCorreo(username, email);
+
                 setTimeout(() => {
                     window.location.href = `${API_URL1}/usuario/inicio_sesion/`;
                 }, 1500);
@@ -121,3 +125,5 @@ if (formContacto) {
         }
     });
 }
+
+
