@@ -259,7 +259,7 @@ async function convertirCarritoMoneda() {
   }
 }
 
-const stripe = Stripe('pk_test_51RQZvBEoXQPVszfv8csTtEas9QrZPBNf13Yi775yET8yyaMtL7DoiIyfxV4V1paw4Hq2yp6KaCJuBVvvBoo0MuIG00ljTQBqqt'); // la misma que pusiste en settings.py
+const stripe = Stripe('');
 
 document.getElementById('boton-compra').addEventListener('click', async () => {
   const carritoItems = obtenerItemsCarrito();

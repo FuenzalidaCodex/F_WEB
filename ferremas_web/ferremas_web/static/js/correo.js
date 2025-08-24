@@ -2,9 +2,9 @@
 export async function enviarCorreo(nombre, email) {
     try {
         
-        emailjs.init('bEaPqcZo8Umf-Wz0T'); 
+        emailjs.init(''); 
         
-        const result = await emailjs.send('service_4amfijq300903', 'template_p9qam3n300903', {
+        const result = await emailjs.send('', '', {
             nombre: nombre,
             email: email
         });
